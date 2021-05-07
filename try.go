@@ -1,6 +1,7 @@
 /*
 Shorter error handling in Go, like the rejected "try" proposal
-(https://golang.org/design/32437-try-builtin), and fairly similar to Swift's.
+(https://golang.org/design/32437-try-builtin), and fairly similar to Swift's
+(but with stacktraces).
 
 Uses a combination of `defer` and panics to make code SIGNIFICANTLY shorter, at
 an acceptable runtime cost. Keeps `error` in the function signatures. Also
