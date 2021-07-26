@@ -74,13 +74,9 @@ func HasStack(err error) bool {
 }
 
 /*
-Tool for adding stacktraces to unexpected arbitrary panics. Usage:
-
-	defer try.Trace()
-	mayPanic()
-
-Unlike the "rec" functions, this does NOT prevent the panic from propagating. It
-simply ensures that there's a stacktrace, then re-panics.
+Tool for adding stacktraces to arbitrary panics. Unlike the "rec" functions,
+this does NOT prevent the panic from propagating. It simply ensures that
+there's a stacktrace, then re-panics.
 
 Caution: due to idiosyncrasies of `recover()`, this works ONLY when deferred
 directly. Anything other than `defer try.Trace()` will NOT work.

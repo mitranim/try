@@ -14,17 +14,7 @@ package try
 
 /*
 Simplifies control flow by panicking on non-nil errors. Should be used in
-conjunction with `Rec`:
-
-	func someFunc() (err error) {
-		defer try.Rec(&err)
-		try.To(errors.New(`A`)) // Will panic and be returned.
-		try.To(errors.New(`B`)) // Will panic and be returned.
-		try.To(nil)             // Will not panic.
-		return
-	}
-
-	err := someFunc()
+conjunction with `Rec`.
 
 If the error doesn't already have a stacktrace, adds one
 via "github.com/pkg/errors". Stacktraces are essential for such exception-like
@@ -36,441 +26,241 @@ func To(err error) {
 	}
 }
 
-/*
-A "try" function that takes and returns a value of type `interface{} value. Usage:
-
-	func someFunc() (interface{}, error) {return "val", errors.New(`err`)}
-	val := try.Interface(someFunc())
-*/
+// A "try" function that takes and returns a value of type `interface{} value.
 func Interface(val interface{}, err error) interface{} {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `bool`. Usage:
-
-	func someFunc() (bool, error) {return true, errors.New(`err`)}
-	val := try.Bool(someFunc())
-*/
+// A "try" function that takes and returns a value of type `bool`.
 func Bool(val bool, err error) bool {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uint8`. Usage:
-
-	func someFunc() (uint8, error) {return 255, errors.New(`err`)}
-	val := try.Uint8(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uint8`.
 func Uint8(val uint8, err error) uint8 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uint16`. Usage:
-
-	func someFunc() (uint16, error) {return 255, errors.New(`err`)}
-	val := try.Uint16(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uint16`.
 func Uint16(val uint16, err error) uint16 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uint32`. Usage:
-
-	func someFunc() (uint32, error) {return 255, errors.New(`err`)}
-	val := try.Uint32(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uint32`.
 func Uint32(val uint32, err error) uint32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uint64`. Usage:
-
-	func someFunc() (uint64, error) {return 255, errors.New(`err`)}
-	val := try.Uint64(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uint64`.
 func Uint64(val uint64, err error) uint64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `byte`. Usage:
-
-	func someFunc() (byte, error) {return 255, errors.New(`err`)}
-	val := try.Byte(someFunc())
-*/
+// A "try" function that takes and returns a value of type `byte`.
 func Byte(val byte, err error) byte {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `int8`. Usage:
-
-	func someFunc() (int8, error) {return 255, errors.New(`err`)}
-	val := try.Int8(someFunc())
-*/
+// A "try" function that takes and returns a value of type `int8`.
 func Int8(val int8, err error) int8 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `int16`. Usage:
-
-	func someFunc() (int16, error) {return 255, errors.New(`err`)}
-	val := try.Int16(someFunc())
-*/
+// A "try" function that takes and returns a value of type `int16`.
 func Int16(val int16, err error) int16 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `rune`. Usage:
-
-	func someFunc() (rune, error) {return 255, errors.New(`err`)}
-	val := try.Rune(someFunc())
-*/
+// A "try" function that takes and returns a value of type `rune`.
 func Rune(val rune, err error) rune {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `int32`. Usage:
-
-	func someFunc() (int32, error) {return 255, errors.New(`err`)}
-	val := try.Int32(someFunc())
-*/
+// A "try" function that takes and returns a value of type `int32`.
 func Int32(val int32, err error) int32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `int64`. Usage:
-
-	func someFunc() (int64, error) {return 255, errors.New(`err`)}
-	val := try.Int64(someFunc())
-*/
+// A "try" function that takes and returns a value of type `int64`.
 func Int64(val int64, err error) int64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `float32`. Usage:
-
-	func someFunc() (float32, error) {return 255, errors.New(`err`)}
-	val := try.Float32(someFunc())
-*/
+// A "try" function that takes and returns a value of type `float32`.
 func Float32(val float32, err error) float32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `float64`. Usage:
-
-	func someFunc() (float64, error) {return 255, errors.New(`err`)}
-	val := try.Float64(someFunc())
-*/
+// A "try" function that takes and returns a value of type `float64`.
 func Float64(val float64, err error) float64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `complex64`. Usage:
-
-	func someFunc() (complex64, error) {return 255, errors.New(`err`)}
-	val := try.Complex64(someFunc())
-*/
+// A "try" function that takes and returns a value of type `complex64`.
 func Complex64(val complex64, err error) complex64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `complex128`. Usage:
-
-	func someFunc() (complex128, error) {return 255, errors.New(`err`)}
-	val := try.Complex128(someFunc())
-*/
+// A "try" function that takes and returns a value of type `complex128`.
 func Complex128(val complex128, err error) complex128 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `string`. Usage:
-
-	func someFunc() (string, error) {return 255, errors.New(`err`)}
-	val := try.String(someFunc())
-*/
+// A "try" function that takes and returns a value of type `string`.
 func String(val string, err error) string {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `int`. Usage:
-
-	func someFunc() (int, error) {return 255, errors.New(`err`)}
-	val := try.Int(someFunc())
-*/
+// A "try" function that takes and returns a value of type `int`.
 func Int(val int, err error) int {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uint`. Usage:
-
-	func someFunc() (uint, error) {return 255, errors.New(`err`)}
-	val := try.Uint(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uint`.
 func Uint(val uint, err error) uint {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `uintptr`. Usage:
-
-	func someFunc() (uintptr, error) {return 255, errors.New(`err`)}
-	val := try.Uintptr(someFunc())
-*/
+// A "try" function that takes and returns a value of type `uintptr`.
 func Uintptr(val uintptr, err error) uintptr {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]interface{}`. Usage:
-
-	func someFunc() ([]interface{}, error) {return []interface{}{"val"}, errors.New(`err`)}
-	val := try.InterfaceSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]interface{}`.
 func InterfaceSlice(val []interface{}, err error) []interface{} {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]bool`. Usage:
-
-	func someFunc() ([]bool, error) {return []bool{true}, errors.New(`err`)}
-	val := try.BoolSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]bool`.
 func BoolSlice(val []bool, err error) []bool {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uint8`. Usage:
-
-	func someFunc() ([]uint8, error) {return []uint8{255}, errors.New(`err`)}
-	val := try.Uint8Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uint8`.
 func Uint8Slice(val []uint8, err error) []uint8 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uint16`. Usage:
-
-	func someFunc() ([]uint16, error) {return []uint16{255}, errors.New(`err`)}
-	val := try.Uint16Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uint16`.
 func Uint16Slice(val []uint16, err error) []uint16 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uint32`. Usage:
-
-	func someFunc() ([]uint32, error) {return []uint32{255}, errors.New(`err`)}
-	val := try.Uint32Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uint32`.
 func Uint32Slice(val []uint32, err error) []uint32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uint64`. Usage:
-
-	func someFunc() ([]uint64, error) {return []uint64{255}, errors.New(`err`)}
-	val := try.Uint64Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uint64`.
 func Uint64Slice(val []uint64, err error) []uint64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]byte`. Usage:
-
-	func someFunc() ([]byte, error) {return []byte{255}, errors.New(`err`)}
-	val := try.ByteSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]byte`.
 func ByteSlice(val []byte, err error) []byte {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]int8`. Usage:
-
-	func someFunc() ([]int8, error) {return []int8{255}, errors.New(`err`)}
-	val := try.Int8Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]int8`.
 func Int8Slice(val []int8, err error) []int8 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]int16`. Usage:
-
-	func someFunc() ([]int16, error) {return []int16{255}, errors.New(`err`)}
-	val := try.Int16Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]int16`.
 func Int16Slice(val []int16, err error) []int16 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]rune`. Usage:
-
-	func someFunc() ([]rune, error) {return []rune{255}, errors.New(`err`)}
-	val := try.RuneSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]rune`.
 func RuneSlice(val []rune, err error) []rune {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]int32`. Usage:
-
-	func someFunc() ([]int32, error) {return []int32{255}, errors.New(`err`)}
-	val := try.Int32Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]int32`.
 func Int32Slice(val []int32, err error) []int32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]int64`. Usage:
-
-	func someFunc() ([]int64, error) {return []int64{255}, errors.New(`err`)}
-	val := try.Int64Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]int64`.
 func Int64Slice(val []int64, err error) []int64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]float32`. Usage:
-
-	func someFunc() ([]float32, error) {return []float32{255}, errors.New(`err`)}
-	val := try.Float32Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]float32`.
 func Float32Slice(val []float32, err error) []float32 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]float64`. Usage:
-
-	func someFunc() ([]float64, error) {return []float64{255}, errors.New(`err`)}
-	val := try.Float64Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]float64`.
 func Float64Slice(val []float64, err error) []float64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]complex64`. Usage:
-
-	func someFunc() ([]complex64, error) {return []complex64{255}, errors.New(`err`)}
-	val := try.Complex64Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]complex64`.
 func Complex64Slice(val []complex64, err error) []complex64 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]complex128`. Usage:
-
-	func someFunc() ([]complex128, error) {return []complex128{255}, errors.New(`err`)}
-	val := try.Complex128Slice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]complex128`.
 func Complex128Slice(val []complex128, err error) []complex128 {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]string`. Usage:
-
-	func someFunc() ([]string, error) {return []string{"val"}, errors.New(`err`)}
-	val := try.StringSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]string`.
 func StringSlice(val []string, err error) []string {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]int`. Usage:
-
-	func someFunc() ([]int, error) {return []int{255}, errors.New(`err`)}
-	val := try.IntSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]int`.
 func IntSlice(val []int, err error) []int {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uint`. Usage:
-
-	func someFunc() ([]uint, error) {return []uint{255}, errors.New(`err`)}
-	val := try.UintSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uint`.
 func UintSlice(val []uint, err error) []uint {
 	To(err)
 	return val
 }
 
-/*
-A "try" function that takes and returns a value of type `[]uintptr`. Usage:
-
-	func someFunc() ([]uintptr, error) {return []uintptr{255}, errors.New(`err`)}
-	val := try.UintptrSlice(someFunc())
-*/
+// A "try" function that takes and returns a value of type `[]uintptr`.
 func UintptrSlice(val []uintptr, err error) []uintptr {
 	To(err)
 	return val
