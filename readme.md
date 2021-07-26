@@ -62,7 +62,7 @@ var val B
 try.To(someFunc(input, &val))
 ```
 
-In the current state of Go, functions conforming to this pattern are easier to compose (in a vague sense), lending themselves to shorter code.
+In the current state of Go, functions conforming to this pattern are easier to compose, leading to much shorter code.
 
 ## Caveats
 

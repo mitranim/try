@@ -93,6 +93,18 @@ func ExampleTrace() {
 	}
 }
 
+func ExampleUnpanic() {
+	someFunc := func() {
+		try.To(errors.New(`failure A`)) // Will panic and be returned.
+		try.To(errors.New(`failure B`)) // Will panic and be returned.
+		try.To(nil)                     // Will not panic.
+	}
+	err := try.Unpanic(someFunc)
+	fmt.Println(err)
+	// Output:
+	// failure A
+}
+
 func ExampleWithMessage() {
 	someFunc := func() (err error) {
 		defer try.WithMessage(&err, `failed to X`)

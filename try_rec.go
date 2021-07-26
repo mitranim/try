@@ -54,3 +54,10 @@ func RecWithMessagef(err *error, pattern string, args ...interface{}) {
 	maybeSet(err, Err(recover()))
 	WithMessagef(err, pattern, args...)
 }
+
+// Runs a panicking function, returning the caught error if any.
+func Unpanic(fun func()) (err error) {
+	defer Rec(&err)
+	fun()
+	return
+}
