@@ -11,7 +11,7 @@ Converts an arbitrary value to an error. Should be used with `recover()`:
 
 	err := Err(recover())
 
-Caution: `recover()` only works when called DIRECTLY inside a deferred function.
+Caution: `recover()` works ONLY when called DIRECTLY inside a deferred function.
 When called ANYWHERE ELSE, even in functions called BY a deferred function,
 it's a nop.
 
@@ -73,18 +73,6 @@ func HasStack(err error) bool {
 	}
 }
 
-/*
-Tool for adding stacktraces to arbitrary panics. Unlike the "rec" functions,
-this does NOT prevent the panic from propagating. It simply ensures that
-there's a stacktrace, then re-panics.
-
-Caution: due to idiosyncrasies of `recover()`, this works ONLY when deferred
-directly. Anything other than `defer try.Trace()` will NOT work.
-*/
-func Trace() {
-	To(Err(recover()))
-}
-
 // Used by `Err()` to wrap non-errors received from `recover()` and convert them
 // to errors.
 type Val struct{ Value interface{} }
@@ -102,19 +90,4 @@ func (self Val) Error() string {
 func (self Val) Unwrap() error {
 	err, _ := self.Value.(error)
 	return err
-}
-
-func maybeSet(ptr *error, err error) {
-	if err != nil {
-		*ptr = err
-	}
-}
-
-func maybeSend(errChan chan<- error, err error) {
-	if err != nil {
-		select {
-		case errChan <- err:
-		default:
-		}
-	}
 }

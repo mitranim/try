@@ -1,8 +1,16 @@
 ## Overview
 
-Shorter error handling in Go, like the rejected [`try` proposal](https://golang.org/design/32437-try-builtin), and fairly similar to Swift's (but with stacktraces).
+Shorter error handling for Go. Supports two approaches:
 
-Uses a combination of `defer` and panics to make code _significantly_ shorter, at an acceptable runtime cost. **Keeps `error` in the function signatures.** Also automatically ensures stacktraces (tightly coupled to ["github.com/pkg/errors"](https://github.com/pkg/errors)).
+* Like the rejected [`try` proposal](https://golang.org/design/32437-try-builtin).
+* Exceptions-based.
+
+Features:
+
+* Uses a combination of `defer` and panics to make code _significantly_ shorter, at an acceptable runtime cost.
+* Automatically ensures stacktraces via ["github.com/pkg/errors"](https://github.com/pkg/errors).
+* You can choose to keep `error` in signatures and use explicit "try".
+* You can choose to drop `error` from signatures and use exceptions.
 
 See API docs at https://pkg.go.dev/github.com/mitranim/try.
 
@@ -10,7 +18,8 @@ See API docs at https://pkg.go.dev/github.com/mitranim/try.
 
 * [Why](#why)
 * [Limitations](#limitations)
-* [Caveats](#caveats)
+* [Naming](#naming)
+* [Changelog](#changelog)
 
 ## Why
 
@@ -34,6 +43,8 @@ func someFunc() error {
 }
 ```
 
+Using the "try" style:
+
 ```golang
 func someFunc() (err error) {
   defer try.RecWithMessage(&err, `failed to X`)
@@ -41,6 +52,17 @@ func someFunc() (err error) {
   try.To(someFunc())
   try.To(someFunc())
   return
+}
+```
+
+Using the "exceptions" style:
+
+```golang
+func someFunc() {
+  defer try.Detail(`failed to X`)
+  someFunc()
+  someFunc()
+  someFunc()
 }
 ```
 
@@ -62,13 +84,28 @@ var val B
 try.To(someFunc(input, &val))
 ```
 
+...Or use inout parameters and panics:
+
+```golang
+func someFunc(input A, out *B) {
+  *out = someOperation(input)
+}
+
+var val B
+someFunc(input, &val)
+```
+
 In the current state of Go, functions conforming to this pattern are easier to compose, leading to much shorter code.
 
-## Caveats
-
-Avoid writing functions whose _only_ signature is "try". Always write functions with `error` in their signature; "try" must be optional.
+## Naming
 
 The term "must" is more conventional in the Go standard library, but this library uses "try" because it's more grammatically flexible: "try string" works, but "must string" would not. The "try" proposal used "try". Swift error handling is very similar and uses "try". (Unlike Swift, we have stacktraces.)
+
+## Changelog
+
+### v0.1.2
+
+Added tools to support the "exceptions" style. For many apps, it's a better fit than either the Go style or the "try" style.
 
 ## License
 

@@ -3,6 +3,7 @@ package try_test
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/mitranim/try"
 	"github.com/pkg/errors"
@@ -11,9 +12,9 @@ import (
 func ExampleTo() {
 	someFunc := func() (err error) {
 		defer try.Rec(&err)
-		try.To(errors.New(`failure A`)) // Will panic and be returned.
-		try.To(errors.New(`failure B`)) // Will panic and be returned.
-		try.To(nil)                     // Will not panic.
+		try.To(errors.New(`failure A`)) // Will panic, error will be returned.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 		return
 	}
 	err := someFunc()
@@ -25,9 +26,9 @@ func ExampleTo() {
 func ExampleRec() {
 	someFunc := func() (err error) {
 		defer try.Rec(&err)
-		try.To(errors.New(`failure A`)) // Will panic and be returned.
-		try.To(errors.New(`failure B`)) // Will panic and be returned.
-		try.To(nil)                     // Will not panic.
+		try.To(errors.New(`failure A`)) // Will panic, error will be returned.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 		return
 	}
 	err := someFunc()
@@ -36,12 +37,30 @@ func ExampleRec() {
 	// failure A
 }
 
+func ExampleRecOnly() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
+	}
+
+	someFunc := func() (err error) {
+		defer try.RecOnly(&err, isErrNoFile)
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+		fmt.Println(`file exists`)
+		return
+	}
+
+	err := someFunc()
+	fmt.Println(err)
+	// Output:
+	// open non-existent-file: no such file or directory
+}
+
 func ExampleRecChan() {
 	someFunc := func(errChan chan error) {
 		defer try.RecChan(errChan)
-		try.To(errors.New(`failure A`)) // Will panic and be sent.
-		try.To(errors.New(`failure B`)) // Will panic and be sent.
-		try.To(nil)                     // Will not panic, will not be sent.
+		try.To(errors.New(`failure A`)) // Will panic, error will be sent.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 	}
 
 	errs := make(chan error, 256)
@@ -61,9 +80,9 @@ func ExampleRecWith() {
 func ExampleRecWithMessage() {
 	someFunc := func() (err error) {
 		defer try.RecWithMessage(&err, `failed to X`)
-		try.To(errors.New(`failure A`)) // Will panic, be wrapped, be returned.
-		try.To(errors.New(`failure B`)) // Will panic, be wrapped, be returned.
-		try.To(nil)                     // Will not panic, will not be wrapped.
+		try.To(errors.New(`failure A`)) // Will panic, error will be wrapped and returned.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 		return
 	}
 	err := someFunc()
@@ -75,12 +94,64 @@ func ExampleRecWithMessage() {
 func ExampleRecWithMessagef() {
 	someFunc := func() (err error) {
 		defer try.RecWithMessagef(&err, `failed to %v`, `X`)
-		try.To(errors.New(`failure A`)) // Will panic, be wrapped, be returned.
-		try.To(errors.New(`failure B`)) // Will panic, be wrapped, be returned.
-		try.To(nil)                     // Will not panic, will not be wrapped.
+		try.To(errors.New(`failure A`)) // Will panic, error will be wrapped and returned.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 		return
 	}
 	err := someFunc()
+	fmt.Println(err)
+	// Output:
+	// failed to X: failure A
+}
+
+func ExampleWithMessage() {
+	someFunc := func() (err error) {
+		defer try.WithMessage(&err, `failed to X`)
+		return errors.New(`failure A`) // Will be wrapped.
+		return errors.New(`failure B`) // Not executed; would panic.
+		return nil                     // Not executed; would not panic.
+	}
+	err := someFunc()
+	fmt.Println(err)
+	// Output:
+	// failed to X: failure A
+}
+
+func ExampleWithMessagef() {
+	someFunc := func() (err error) {
+		defer try.WithMessagef(&err, `failed to %v`, `X`)
+		return errors.New(`failure A`) // Will panic, error will be wrapped.
+		return errors.New(`failure B`) // Not executed; would panic.
+		return nil                     // Not executed; would not panic.
+	}
+	err := someFunc()
+	fmt.Println(err)
+	// Output:
+	// failed to X: failure A
+}
+
+func ExampleDetail() {
+	someFunc := func() {
+		defer try.Detail(`failed to X`)
+		try.To(errors.New(`failure A`)) // Will be wrapped.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
+	}
+	err := try.Catch(someFunc)
+	fmt.Println(err)
+	// Output:
+	// failed to X: failure A
+}
+
+func ExampleDetailf() {
+	someFunc := func() {
+		defer try.Detailf(`failed to %v`, `X`)
+		try.To(errors.New(`failure A`)) // Will be wrapped.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
+	}
+	err := try.Catch(someFunc)
 	fmt.Println(err)
 	// Output:
 	// failed to X: failure A
@@ -93,42 +164,161 @@ func ExampleTrace() {
 	}
 }
 
-func ExampleUnpanic() {
+func ExampleCatch() {
 	someFunc := func() {
-		try.To(errors.New(`failure A`)) // Will panic and be returned.
-		try.To(errors.New(`failure B`)) // Will panic and be returned.
-		try.To(nil)                     // Will not panic.
+		try.To(errors.New(`failure A`)) // Will panic.
+		try.To(errors.New(`failure B`)) // Not executed; would panic.
+		try.To(nil)                     // Not executed; would not panic.
 	}
-	err := try.Unpanic(someFunc)
+	err := try.Catch(someFunc)
 	fmt.Println(err)
 	// Output:
 	// failure A
 }
 
-func ExampleWithMessage() {
-	someFunc := func() (err error) {
-		defer try.WithMessage(&err, `failed to X`)
-		return errors.New(`failure A`) // Will be wrapped.
-		return errors.New(`failure B`) // Will be wrapped.
-		return nil                     // Will not be wrapped.
+func ExampleCatchOnly() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
 	}
-	err := someFunc()
+
+	maybeRead := func() {
+		fmt.Println(try.ByteSlice(os.ReadFile(`non-existent-file`)))
+	}
+
+	err := try.CatchOnly(isErrNoFile, maybeRead)
 	fmt.Println(err)
 	// Output:
-	// failed to X: failure A
+	// open non-existent-file: no such file or directory
 }
 
-func ExampleWithMessagef() {
-	someFunc := func() (err error) {
-		defer try.WithMessagef(&err, `failed to %v`, `X`)
-		return errors.New(`failure A`) // Will be wrapped.
-		return errors.New(`failure B`) // Will be wrapped.
-		return nil                     // Will not be wrapped.
+func ExampleCaught() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
 	}
-	err := someFunc()
-	fmt.Println(err)
+
+	maybeRead := func() {
+		fmt.Println(try.ByteSlice(os.ReadFile(`non-existent-file`)))
+	}
+
+	fmt.Println(try.Caught(isErrNoFile, maybeRead))
 	// Output:
-	// failed to X: failure A
+	// true
+}
+
+func ExampleIgnoring() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
+	}
+
+	maybeRead := func() {
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+		fmt.Println(`file exists`)
+	}
+
+	try.Ignoring(isErrNoFile, maybeRead)
+	// Output:
+}
+
+func ExampleIgnore() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
+	}
+
+	someFunc := func() {
+		defer try.Ignore(isErrNoFile)
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+		fmt.Println(`file exists`)
+	}
+
+	someFunc()
+	// Output:
+}
+
+func ExampleTrans() {
+	type ErrPub struct{ error }
+
+	toErrPub := func(err error) error {
+		if err != nil {
+			return ErrPub{err}
+		}
+		return nil
+	}
+
+	someFunc := func() {
+		defer try.Trans(toErrPub)
+		panic(errors.New(`failure`))
+	}
+
+	err := try.Catch(someFunc)
+	fmt.Println(errors.As(err, new(ErrPub)))
+	// Output:
+	// true
+}
+
+func ExampleWithTrans() {
+	type ErrPub struct{ error }
+
+	toErrPub := func(err error) error {
+		if err != nil {
+			return ErrPub{err}
+		}
+		return nil
+	}
+
+	someFunc := func() {
+		panic(errors.New(`failure`))
+	}
+
+	err := try.Catch(func() {
+		try.WithTrans(toErrPub, someFunc)
+	})
+	fmt.Println(errors.As(err, new(ErrPub)))
+	// Output:
+	// true
+}
+
+func ExampleOk() {
+	logOk := func() { fmt.Println(`no panic`) }
+
+	funcOk := func() {
+		defer try.Ok(logOk)
+		fmt.Println(`not panicking`)
+	}
+
+	funcFail := func() {
+		defer try.Ok(logOk)
+		fmt.Println(`panicking`)
+		panic(errors.New(`failure`))
+	}
+
+	funcOk()
+	_ = try.Catch(funcFail)
+	// Output:
+	// not panicking
+	// no panic
+	// panicking
+}
+
+func ExampleFail() {
+	logErr := func(err error) { fmt.Println(`caught:`, err) }
+
+	funcOk := func() {
+		defer try.Fail(logErr)
+		fmt.Println(`not panicking`)
+	}
+
+	funcFail := func() {
+		defer try.Fail(logErr)
+		fmt.Println(`panicking`)
+		panic(errors.New(`failure`))
+	}
+
+	funcOk()
+	_ = try.Catch(funcFail)
+	// Output:
+	// not panicking
+	// panicking
+	// caught: failure
 }
 
 func ExampleInterface() {
