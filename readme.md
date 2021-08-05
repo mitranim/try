@@ -26,16 +26,16 @@ See API docs at https://pkg.go.dev/github.com/mitranim/try.
 Go wants you to add meaningful context when handling errors. I sympathize with this idea, and do it often. But there's code where annotating every single failure is not practical and/or bloats the code beyond our ability to _read it back_.
 
 ```golang
-func someFunc() error {
-  err := someFunc()
+func someFuncA() error {
+  err := someFuncB()
   if err != nil {
     return errors.WithMessage(err, `failed to X`)
   }
-  err = someFunc()
+  err = someFuncC()
   if err != nil {
     return errors.WithMessage(err, `failed to X`)
   }
-  err = someFunc()
+  err = someFuncD()
   if err != nil {
     return errors.WithMessage(err, `failed to X`)
   }
@@ -46,11 +46,11 @@ func someFunc() error {
 Using the "try" style:
 
 ```golang
-func someFunc() (err error) {
+func someFuncA() (err error) {
   defer try.RecWithMessage(&err, `failed to X`)
-  try.To(someFunc())
-  try.To(someFunc())
-  try.To(someFunc())
+  try.To(someFuncB())
+  try.To(someFuncC())
+  try.To(someFuncD())
   return
 }
 ```
@@ -58,11 +58,11 @@ func someFunc() (err error) {
 Using the "exceptions" style:
 
 ```golang
-func someFunc() {
+func someFuncA() {
   defer try.Detail(`failed to X`)
-  someFunc()
-  someFunc()
-  someFunc()
+  someFuncB()
+  someFuncC()
+  someFuncD()
 }
 ```
 
@@ -102,6 +102,10 @@ In the current state of Go, functions conforming to this pattern are easier to c
 The term "must" is more conventional in the Go standard library, but this library uses "try" because it's more grammatically flexible: "try string" works, but "must string" would not. The "try" proposal used "try". Swift error handling is very similar and uses "try". (Unlike Swift, we have stacktraces.)
 
 ## Changelog
+
+### v0.1.3
+
+Added `DetailOnly` and `DetailOnlyf`.
 
 ### v0.1.2
 

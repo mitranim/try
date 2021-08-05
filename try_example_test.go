@@ -157,6 +157,39 @@ func ExampleDetailf() {
 	// failed to X: failure A
 }
 
+func ExampleDetailOnly() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
+	}
+
+	someFunc := func() {
+		defer try.DetailOnly(isErrNoFile, `file not found`)
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+	}
+
+	err := try.Catch(someFunc)
+	fmt.Println(err)
+	// Output:
+	// file not found: open non-existent-file: no such file or directory
+}
+
+func ExampleDetailOnlyf() {
+	isErrNoFile := func(err error) bool {
+		return errors.Is(err, os.ErrNotExist)
+	}
+
+	someFunc := func() {
+		const name = `non-existent-file`
+		defer try.DetailOnlyf(isErrNoFile, `file %q not found`, name)
+		_ = try.ByteSlice(os.ReadFile(name))
+	}
+
+	err := try.Catch(someFunc)
+	fmt.Println(err)
+	// Output:
+	// file "non-existent-file" not found: open non-existent-file: no such file or directory
+}
+
 func ExampleTrace() {
 	defer try.Trace()
 	if false {

@@ -64,6 +64,30 @@ func Detailf(msg string, args ...interface{}) {
 }
 
 /*
+Must be deferred. Wraps non-nil panics, prepending the error message, ONLY if
+they satisfy the provided test. Idempotently adds a stacktrace to all panics.
+*/
+func DetailOnly(test func(error) bool, msg string) {
+	err := Err(recover())
+	if err != nil && test != nil && test(err) {
+		err = errors.WithMessage(err, msg)
+	}
+	To(err)
+}
+
+/*
+Must be deferred. Wraps non-nil panics, prepending the error message, ONLY if
+they satisfy the provided test. Idempotently adds a stacktrace to all panics.
+*/
+func DetailOnlyf(test func(error) bool, msg string, args ...interface{}) {
+	err := Err(recover())
+	if err != nil && test != nil && test(err) {
+		err = errors.WithMessagef(err, msg, args...)
+	}
+	To(err)
+}
+
+/*
 Must be deferred. Catches panics; ignores errors that satisfy the provided
 test; re-panics on other non-nil errors. Idempotently adds a stacktrace.
 */
