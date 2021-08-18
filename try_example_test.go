@@ -225,6 +225,16 @@ func ExampleCatchOnly() {
 }
 
 func ExampleCaught() {
+	maybeRead := func() {
+		fmt.Println(try.ByteSlice(os.ReadFile(`non-existent-file`)))
+	}
+
+	fmt.Println(try.Caught(maybeRead))
+	// Output:
+	// true
+}
+
+func ExampleCaughtOnly() {
 	isErrNoFile := func(err error) bool {
 		return errors.Is(err, os.ErrNotExist)
 	}
@@ -233,7 +243,7 @@ func ExampleCaught() {
 		fmt.Println(try.ByteSlice(os.ReadFile(`non-existent-file`)))
 	}
 
-	fmt.Println(try.Caught(isErrNoFile, maybeRead))
+	fmt.Println(try.CaughtOnly(isErrNoFile, maybeRead))
 	// Output:
 	// true
 }

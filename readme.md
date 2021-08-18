@@ -103,6 +103,10 @@ The term "must" is more conventional in the Go standard library, but this librar
 
 ## Changelog
 
+### v0.1.4
+
+Breaking: renamed `Caught` to `CaughtOnly` for consistency, added `Caught`.
+
 ### v0.1.3
 
 Added `DetailOnly` and `DetailOnlyf`.

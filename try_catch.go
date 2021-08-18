@@ -24,10 +24,18 @@ func CatchOnly(test func(error) bool, fun func()) (err error) {
 }
 
 /*
-Shortcut for `CatchOnly() != nil`. Useful when you want to handle and ignore a
-specific error, but don't care about its content.
+Shortcut for `Catch() != nil`. Useful when you want to handle all errors while
+ignoring their content.
 */
-func Caught(test func(error) bool, fun func()) bool {
+func Caught(fun func()) bool {
+	return Catch(fun) != nil
+}
+
+/*
+Shortcut for `CatchOnly() != nil`. Useful when you want to handle a specific
+error while ignoring its content.
+*/
+func CaughtOnly(test func(error) bool, fun func()) bool {
 	return CatchOnly(test, fun) != nil
 }
 
