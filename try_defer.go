@@ -88,10 +88,15 @@ func DetailOnlyf(test func(error) bool, msg string, args ...interface{}) {
 }
 
 /*
+Must be deferred. Catches and ignores ALL panics.
+*/
+func Ignore() { recover() }
+
+/*
 Must be deferred. Catches panics; ignores errors that satisfy the provided
 test; re-panics on other non-nil errors. Idempotently adds a stacktrace.
 */
-func Ignore(test func(error) bool) {
+func IgnoreOnly(test func(error) bool) {
 	err := Err(recover())
 	if err != nil && test != nil && test(err) {
 		return

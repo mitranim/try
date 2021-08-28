@@ -103,6 +103,19 @@ The term "must" is more conventional in the Go standard library, but this librar
 
 ## Changelog
 
+### v0.1.5
+
+Breaking renaming for consistency:
+
+  * `Ignore` → `IgnoreOnly`
+  * `Ignoring` → `IgnoringOnly`
+  * `WithTrans` → `Transing`
+
+Added:
+
+  * `Ignore`
+  * `Ignoring`
+
 ### v0.1.4
 
 Breaking: renamed `Caught` to `CaughtOnly` for consistency, added `Caught`.

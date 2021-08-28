@@ -40,11 +40,21 @@ func CaughtOnly(test func(error) bool, fun func()) bool {
 }
 
 /*
+Runs a function, catching and ignoring ALL panics.
+*/
+func Ignoring(fun func()) {
+	defer Ignore()
+	if fun != nil {
+		fun()
+	}
+}
+
+/*
 Runs a function, catching and ignoring only the panics that satisfy the provided
 test. Idempotently adds a stacktrace to all panics.
 */
-func Ignoring(test func(error) bool, fun func()) {
-	defer Ignore(test)
+func IgnoringOnly(test func(error) bool, fun func()) {
+	defer IgnoreOnly(test)
 	if fun != nil {
 		fun()
 	}
@@ -55,7 +65,7 @@ Runs a function, "transmuting" the resulting panics by calling the provided
 transformer, which may choose to suppress or wrap specific error types. See
 `Trans`.
 */
-func WithTrans(trans func(error) error, fun func()) {
+func Transing(trans func(error) error, fun func()) {
 	defer Trans(trans)
 	if fun != nil {
 		fun()

@@ -249,6 +249,16 @@ func ExampleCaughtOnly() {
 }
 
 func ExampleIgnoring() {
+	maybeRead := func() {
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+		fmt.Println(`file exists`)
+	}
+
+	try.Ignoring(maybeRead)
+	// Output:
+}
+
+func ExampleIgnoringOnly() {
 	isErrNoFile := func(err error) bool {
 		return errors.Is(err, os.ErrNotExist)
 	}
@@ -258,17 +268,28 @@ func ExampleIgnoring() {
 		fmt.Println(`file exists`)
 	}
 
-	try.Ignoring(isErrNoFile, maybeRead)
+	try.IgnoringOnly(isErrNoFile, maybeRead)
 	// Output:
 }
 
 func ExampleIgnore() {
+	someFunc := func() {
+		defer try.Ignore()
+		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
+		fmt.Println(`file exists`)
+	}
+
+	someFunc()
+	// Output:
+}
+
+func ExampleIgnoreOnly() {
 	isErrNoFile := func(err error) bool {
 		return errors.Is(err, os.ErrNotExist)
 	}
 
 	someFunc := func() {
-		defer try.Ignore(isErrNoFile)
+		defer try.IgnoreOnly(isErrNoFile)
 		_ = try.ByteSlice(os.ReadFile(`non-existent-file`))
 		fmt.Println(`file exists`)
 	}
@@ -298,7 +319,7 @@ func ExampleTrans() {
 	// true
 }
 
-func ExampleWithTrans() {
+func ExampleTransing() {
 	type ErrPub struct{ error }
 
 	toErrPub := func(err error) error {
@@ -313,7 +334,7 @@ func ExampleWithTrans() {
 	}
 
 	err := try.Catch(func() {
-		try.WithTrans(toErrPub, someFunc)
+		try.Transing(toErrPub, someFunc)
 	})
 	fmt.Println(errors.As(err, new(ErrPub)))
 	// Output:
