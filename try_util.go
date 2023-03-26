@@ -75,19 +75,19 @@ func HasStack(err error) bool {
 
 // Used by `Err()` to wrap non-errors received from `recover()` and convert them
 // to errors.
-type Val struct{ Value interface{} }
+type Val struct{ Val interface{} }
 
 // Implement `error`.
 func (self Val) Error() string {
-	if self.Value != nil {
-		return fmt.Sprint(self.Value)
+	if self.Val != nil {
+		return fmt.Sprint(self.Val)
 	}
-	return ""
+	return ``
 }
 
 // Implement error unwrapping, in case an `error` gets accidentally converted to
 // `interface{}` before ending up here.
 func (self Val) Unwrap() error {
-	err, _ := self.Value.(error)
+	err, _ := self.Val.(error)
 	return err
 }

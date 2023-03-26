@@ -1,3 +1,5 @@
+**Moved to https://github.com/mitranim/gg**. This repo is usable but frozen.
+
 ## Overview
 
 Shorter error handling for Go. Supports two approaches:
@@ -17,6 +19,7 @@ See API docs at https://pkg.go.dev/github.com/mitranim/try.
 ## TOC
 
 * [Why](#why)
+* [Performance](#performance)
 * [Limitations](#limitations)
 * [Naming](#naming)
 * [Changelog](#changelog)
@@ -68,9 +71,13 @@ func someFuncA() {
 
 The code should speak for itself. This won't be usable for _every_ codebase, see [Limitations](#limitations) below, but can be a nice improvement for some.
 
+## Performance
+
+Defer/panic/recover have no meaningful impact on performance. Generating stacktraces has a very minor performance cost. For most apps and libraries, this makes no difference. For very CPU-heavy code such as low-level image processing, you're free to use defer/panic/recover, but should use errors without stacktraces.
+
 ## Limitations
 
-This has a minor runtime cost. Use this for IO-heavy control code, where the cost is barely measurable. Avoid this in CPU-heavy code or libraries.
+FIXME generics and `gg`
 
 This package provides a variety of "try" functions for common cases, but it can't define something generic like the original proposal did. To make your code compatible, prefer to use pointers for "inout" parameters of non-primitive types, and return only `error`:
 
